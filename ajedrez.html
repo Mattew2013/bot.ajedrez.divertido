@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<title>Ajedez Bot Trujillano</title>
+<style>
+  #board { width: 400px; margin: 20px auto; }
+  #comments { width: 400px; margin: 10px auto; font-family: monospace; background: #eee; padding: 10px; height: 100px; overflow-y: auto; }
+  body { text-align: center; background: #fafafa; }
+</style>
+<link rel="stylesheet" href="https://unpkg.com/chessboardjs@1.0.0/www/css/chessboard-1.0.0.min.css" />
+</head>
+<body>
+
+<h1>Ajedez Bot Trujillano</h1>
+<div id="board"></div>
+<div id="comments">Aquí te tiran los mensajes, campeón.</div>
+
+<script src="https://unpkg.com/chessboardjs@1.0.0/www/js/chessboard-1.0.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chess.js@0.12.0/chess.min.js"></script>
+<script>
+  const boardEl = document.getElementById('board');
+  const commentsEl = document.getElementById('comments');
+  const game = new Chess();
+
+  // Comentarios estilo trujillano, ponle flow
+  const comentarios = [
+    "¿Eso es todo? Más juego yo con los ojos cerrados.",
+    "Ponte las pilas, que aquí no regalan nada.",
+    "Ahí te pasaste, buena jugada, casi me cag... digo, casi me sorprendes.",
+    "Chibolo, esa movida fue pa’ los perros.",
+    "Te la veo negra si sigues así, dale que se puede.",
+    "Ni en la quebrada hacían eso, pero sigue intentando.",
+  ];
+
+  function agregarComentario() {
+    const texto = comentarios[Math.floor(Math.random() * comentarios.length)];
+    commentsEl.innerHTML += "<br>" + texto;
+    commentsEl.scrollTop = commentsEl.scrollHeight;
+  }
+
+  function makeRandomMove() {
+    const moves = game.moves();
+    if (moves.length === 0) return; // juego terminado
+    const move = moves[Math.floor(Math.random() * moves.length)];
+    game.move(move);
+    board.position(game.fen());
+    agregarComentario();
+  }
+
+  function onDrop(source, target) {
+    const move = game.move({ from: source, to: target, promotion: 'q' });
+    if (move === null) return 'snapback'; // movimiento inválido
+
+    board.position(game.fen());
+
+    setTimeout(() => {
+      makeRandomMove();
+    }, 500);
+  }
+
+  const board = Chessboard('board', {
+    draggable: true,
+    position: 'start',
+    onDrop: onDrop
+  });
+</script>
+
+</body>
+</html>
